@@ -1,50 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Action Trigger with Embedded Popup</title>
+<title>Action Trigger with Fullscreen Embedded Popup</title>
 </head>
 <body>
 
 <h1>Click the button to perform the actions</h1>
 
-<button onclick="performActions()">Trigger Actions (with Embedded Popup)</button>
+<button onclick="performActions()">Trigger Actions (with Fullscreen Embedded Popup)</button>
 
 <script>
 function performActions() {
   // --- Action 1: Open an about:blank popup window ---
   console.log("Opening an about:blank popup window...");
 
-  // Open a new window with 'about:blank' as the initial content.
-  // This is often less likely to be blocked outright than opening directly to another URL,
-  // but popup blockers can still prevent it.
-  const popupWindow = window.open('about:blank', 'embeddedContentPopup', 'width=700,height=500,resizable=yes,scrollbars=yes');
+  const popupWindow = window.open('about:blank', 'embeddedContentPopup', 'width=800,height=600,resizable=yes,scrollbars=yes'); // Increased size slightly for better view
 
-  // Check if the popup was blocked by the browser
+  // Check if the popup was blocked
   if (!popupWindow || popupWindow.closed || typeof popupWindow.closed == 'undefined') {
       console.warn("Popup window might have been blocked by the browser or a popup blocker.");
-      // You might want to alert the user here or provide instructions to allow popups.
-      // We stop here if the popup was blocked.
-      return;
+      return; // Stop execution if popup is blocked
   }
 
-  // --- Action 1b: Dynamically add an iframe to the about:blank popup ---
-  console.log("Embedding content into the about:blank popup...");
+  // --- Action 1b: Dynamically add an iframe to the about:blank popup that fills the window ---
+  console.log("Embedding content to fill the about:blank popup...");
 
   try {
-      // It's often necessary to open and close the document stream of the new window
-      // before writing to it, especially right after opening.
       popupWindow.document.open();
 
-      // Write the HTML structure containing the iframe into the popup window's document.
+      // Write the HTML structure with refined styling to make the iframe fill the entire popup window.
       popupWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
         <title>Embedded Content</title>
         <style>
-          /* Optional: Style to make the iframe fill the popup window */
-          body { margin: 0; overflow: hidden; }
-          iframe { width: 100%; height: 100%; border: none; }
+          /* Ensure html and body take up full height and width, removing default margins/padding */
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Hide scrollbars on the popup body if iframe content overflows */
+          }
+          /* Make the iframe fill its parent (the body), remove border, and set display block */
+          iframe {
+            display: block; /* Prevents extra space below the iframe */
+            width: 100%;
+            height: 100%;
+            border: none; /* Remove the default iframe border */
+          }
         </style>
         </head>
         <body>
@@ -53,28 +58,26 @@ function performActions() {
         </html>
       `);
 
-      // Close the document stream. This tells the browser that the HTML is complete.
-      popupWindow.document.close();
+      popupWindow.document.close(); // Close the document stream to render the content
 
-      console.log("Content embedding process initiated in the popup.");
+      console.log("Content embedded and styled to fill the popup.");
 
   } catch (e) {
       console.error("Error embedding content into popup:", e);
-      // Handle potential errors during the process of writing to the popup.
-      // This could happen if the popup was somehow closed unexpectedly or due to other issues.
+      // Handle potential errors during the process.
   }
 
 
   // --- Action 2: Change the current website to google.com ---
   console.log("Navigating current page to google.com...");
   // This will immediately change the URL of the current tab/window.
-  // This navigation happens regardless of whether the popup opening or embedding succeeded.
+  // This happens regardless of whether the popup operations succeeded.
   window.location.href = 'https://www.google.com';
 }
 </script>
 
 <p>
-Note: Clicking the button will attempt to open a blank popup window, embed content from stanle7.github.io/WARSIM/dos.html into it using an iframe, and immediately navigate this page to google.com. Browser popup blockers might prevent the popup from appearing.
+Note: Clicking the button will attempt to open a blank popup window, embed content from stanle7.github.io/WARSIM/dos.html into it using an iframe that fills the window, and immediately navigate this page to google.com. Browser popup blockers might prevent the popup from appearing.
 </p>
 
 </body>
