@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Action Trigger</title>
+</head>
+<body>
+
+<h1>Click the button to perform the actions</h1>
+
+<button onclick="performActions()">Trigger Actions</button>
+
+<script>
+function performActions() {
+  // --- Action 1: Attempt to open ./dos.html ---
+  // IMPORTANT: This will likely NOT work as expected due to browser security restrictions
+  // preventing web pages from directly accessing local files on your computer.
+  console.log("Attempting to open ./dos.html...");
+  // Attempt to open in a new tab. Still subject to security restrictions.
+  window.open('./dos.html', '_blank');
+
+  // --- Action 2: Change the current website to google.com ---
+  console.log("Navigating current page to google.com...");
+  // This will immediately change the URL of the current tab.
+  window.location.href = 'https://www.google.com';
+}
+</script>
+
+<p>
+Please note: The attempt to open "./dos.html" is unlikely to succeed due to browser security settings designed to protect your local files. The primary action that will occur is that this page will navigate to google.com.
+</p>
+
+</body>
+</html>
