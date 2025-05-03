@@ -1,33 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Action Trigger</title>
+<title>Action Trigger with Popup</title>
+      <style>
+      /* Your existing CSS styles */
+      body {
+        background-color: #000;
+        color: #0f0; /* Green text */
+        font-family: "Courier New", Courier, monospace;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 95vh; /* Use vh for height */
+        overflow: hidden; /* Prevent body scroll */
+      }
+
+      #game-container {
+        flex-grow: 1; /* Allow container to fill space */
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        color: #0f0; /* Green */
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.5em; /* Adjust size as needed */
+      }
+
+      #game-output {
+        flex-grow: 1; /* Allow output area to fill space */
+        border: 1px solid #0f0;
+        padding: 10px;
+        overflow-y: auto; /* Enable scrolling for output */
+        white-space: pre-wrap; /* Preserve whitespace and wrap text */
+        margin-bottom: 10px;
+        scrollbar-color: #0f0 #000; /* Scrollbar color for some browsers */
+        scrollbar-width: thin;
+      }
+
+      #game-output::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      #game-output::-webkit-scrollbar-track {
+        background: #000;
+      }
+
+      #game-output::-webkit-scrollbar-thumb {
+        background-color: #0f0;
+        border-radius: 4px;
+        border: 1px solid #000;
+      }
+
+      .input-container {
+        display: flex;
+        align-items: center;
+        border: 1px solid #0f0;
+        padding: 5px;
+      }
+
+      .input-container span {
+        color: #0f0;
+        margin-right: 5px;
+      }
+
+      #command-input {
+        background-color: #000;
+        color: #0f0;
+        border: none;
+        outline: none;
+        flex-grow: 1;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1em;
+      }
+
+      /* Styles for different output types */
+      .narrative {
+        color: #0ff; /* Cyan */
+      }
+
+      .warning {
+        color: #ff0; /* Yellow */
+      }
+
+      .event {
+        color: #f0f; /* Magenta */
+      }
+    </style>
 </head>
 <body>
 
 <h1>Click the button to perform the actions</h1>
 
-<button onclick="performActions()">Trigger Actions</button>
+<button onclick="performActions()">Lanch game</button>
 
 <script>
 function performActions() {
-  // --- Action 1: Attempt to open ./dos.html ---
-  // IMPORTANT: This will likely NOT work as expected due to browser security restrictions
-  // preventing web pages from directly accessing local files on your computer.
-  console.log("Attempting to open ./dos.html...");
-  // Attempt to open in a new tab. Still subject to security restrictions.
-  window.open('./dos.html', '_blank');
+  // --- Action 1: Attempt to open ./dos.html in a popup window ---
+  // IMPORTANT: This is highly likely to be blocked by browser popup blockers
+  // and will also be subject to the security restrictions preventing web pages
+  // from directly accessing local files on your computer.
+  console.log("Attempting to open ./dos.html in a popup window...");
+
+  // Parameters for the popup window: name, features string
+  // Features string can specify size, toolbars, etc.
+  const popupWindow = window.open('./dos.html', 'dosPopup', 'width=700,height=500,resizable=yes,scrollbars=yes');
+
+  // Optional: Check if the popup was blocked (this check might not be fully reliable across all browsers)
+  if (!popupWindow || popupWindow.closed || typeof popupWindow.closed == 'undefined') {
+      console.warn("Popup window might have been blocked by the browser or a popup blocker.");
+      // You could add a visual indicator or message to the user here if needed.
+  }
+
 
   // --- Action 2: Change the current website to google.com ---
   console.log("Navigating current page to google.com...");
-  // This will immediately change the URL of the current tab.
+  // This will immediately change the URL of the current tab/window.
   window.location.href = 'https://www.google.com';
 }
 </script>
 
-<p>
-Please note: The attempt to open "./dos.html" is unlikely to succeed due to browser security settings designed to protect your local files. The primary action that will occur is that this page will navigate to google.com.
-</p>
 
 </body>
 </html>
