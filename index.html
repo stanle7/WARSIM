@@ -93,28 +93,26 @@
 </head>
 <body>
 
-<h1>Click the button to perform the actions</h1>
+<h1>Click the button to open WARSIM</h1>
 
-<button onclick="performActions()">Lanch game</button>
+<button id="input-container" onclick="performActions()">Lanch game</button>
+
 
 <script>
 function performActions() {
-  // --- Action 1: Attempt to open ./dos.html in a popup window ---
-  // IMPORTANT: This is highly likely to be blocked by browser popup blockers
-  // and will also be subject to the security restrictions preventing web pages
-  // from directly accessing local files on your computer.
-  console.log("Attempting to open ./dos.html in a popup window...");
+  // --- Action 1: Open an about:blank popup window ---
+  console.log("Opening an about:blank popup window...");
 
-  // Parameters for the popup window: name, features string
-  // Features string can specify size, toolbars, etc.
-  const popupWindow = window.open('./dos.html', 'dosPopup', 'width=700,height=500,resizable=yes,scrollbars=yes');
+  // Using 'about:blank' as the URL opens a new, empty window.
+  // It will not have a title initially as it has no content.
+  // The third argument specifies window features like size.
+  const popupWindow = window.open('about:blank', 'myBlankPopup', 'width=700,height=500,resizable=yes,scrollbars=yes');
 
-  // Optional: Check if the popup was blocked (this check might not be fully reliable across all browsers)
+  // Optional: Check if the popup was blocked (less common for about:blank, but still possible)
   if (!popupWindow || popupWindow.closed || typeof popupWindow.closed == 'undefined') {
       console.warn("Popup window might have been blocked by the browser or a popup blocker.");
-      // You could add a visual indicator or message to the user here if needed.
+      // You could add a message to the user if the popup is blocked.
   }
-
 
   // --- Action 2: Change the current website to google.com ---
   console.log("Navigating current page to google.com...");
@@ -123,6 +121,5 @@ function performActions() {
 }
 </script>
 
-
 </body>
-</html>
+</html> 
