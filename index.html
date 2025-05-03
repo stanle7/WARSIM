@@ -1,125 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Action Trigger with Popup</title>
-      <style>
-      /* Your existing CSS styles */
-      body {
-        background-color: #000;
-        color: #0f0; /* Green text */
-        font-family: "Courier New", Courier, monospace;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        height: 95vh; /* Use vh for height */
-        overflow: hidden; /* Prevent body scroll */
-      }
-
-      #game-container {
-        flex-grow: 1; /* Allow container to fill space */
-        display: flex;
-        flex-direction: column;
-      }
-
-      h1 {
-        color: #0f0; /* Green */
-        text-align: center;
-        margin-top: 0;
-        margin-bottom: 10px;
-        font-size: 1.5em; /* Adjust size as needed */
-      }
-
-      #game-output {
-        flex-grow: 1; /* Allow output area to fill space */
-        border: 1px solid #0f0;
-        padding: 10px;
-        overflow-y: auto; /* Enable scrolling for output */
-        white-space: pre-wrap; /* Preserve whitespace and wrap text */
-        margin-bottom: 10px;
-        scrollbar-color: #0f0 #000; /* Scrollbar color for some browsers */
-        scrollbar-width: thin;
-      }
-
-      #game-output::-webkit-scrollbar {
-        width: 8px;
-      }
-
-      #game-output::-webkit-scrollbar-track {
-        background: #000;
-      }
-
-      #game-output::-webkit-scrollbar-thumb {
-        background-color: #0f0;
-        border-radius: 4px;
-        border: 1px solid #000;
-      }
-
-      .input-container {
-        display: flex;
-        align-items: center;
-        border: 1px solid #0f0;
-        padding: 5px;
-      }
-
-      .input-container span {
-        color: #0f0;
-        margin-right: 5px;
-      }
-
-      #command-input {
-        background-color: #000;
-        color: #0f0;
-        border: none;
-        outline: none;
-        flex-grow: 1;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 1em;
-      }
-
-      /* Styles for different output types */
-      .narrative {
-        color: #0ff; /* Cyan */
-      }
-
-      .warning {
-        color: #ff0; /* Yellow */
-      }
-
-      .event {
-        color: #f0f; /* Magenta */
-      }
-    </style>
+<title>Action Trigger with Embedded Popup</title>
 </head>
 <body>
 
-<h1>Click the button to open WARSIM</h1>
+<h1>Click the button to perform the actions</h1>
 
-<button id="input-container" onclick="performActions()">Lanch game</button>
-
+<button onclick="performActions()">Trigger Actions (with Embedded Popup)</button>
 
 <script>
 function performActions() {
   // --- Action 1: Open an about:blank popup window ---
   console.log("Opening an about:blank popup window...");
 
-  // Using 'about:blank' as the URL opens a new, empty window.
-  // It will not have a title initially as it has no content.
-  // The third argument specifies window features like size.
-  const popupWindow = window.open('about:blank', 'myBlankPopup', 'width=700,height=500,resizable=yes,scrollbars=yes');
+  // Open a new window with 'about:blank' as the initial content.
+  // This is often less likely to be blocked outright than opening directly to another URL,
+  // but popup blockers can still prevent it.
+  const popupWindow = window.open('about:blank', 'embeddedContentPopup', 'width=700,height=500,resizable=yes,scrollbars=yes');
 
-  // Optional: Check if the popup was blocked (less common for about:blank, but still possible)
+  // Check if the popup was blocked by the browser
   if (!popupWindow || popupWindow.closed || typeof popupWindow.closed == 'undefined') {
       console.warn("Popup window might have been blocked by the browser or a popup blocker.");
-      // You could add a message to the user if the popup is blocked.
+      // You might want to alert the user here or provide instructions to allow popups.
+      // We stop here if the popup was blocked.
+      return;
   }
+
+  // --- Action 1b: Dynamically add an iframe to the about:blank popup ---
+  console.log("Embedding content into the about:blank popup...");
+
+  try {
+      // It's often necessary to open and close the document stream of the new window
+      // before writing to it, especially right after opening.
+      popupWindow.document.open();
+
+      // Write the HTML structure containing the iframe into the popup window's document.
+      popupWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <title>Embedded Content</title>
+        <style>
+          /* Optional: Style to make the iframe fill the popup window */
+          body { margin: 0; overflow: hidden; }
+          iframe { width: 100%; height: 100%; border: none; }
+        </style>
+        </head>
+        <body>
+          <iframe src="https://stanle7.github.io/WARSIM/dos.html"></iframe>
+        </body>
+        </html>
+      `);
+
+      // Close the document stream. This tells the browser that the HTML is complete.
+      popupWindow.document.close();
+
+      console.log("Content embedding process initiated in the popup.");
+
+  } catch (e) {
+      console.error("Error embedding content into popup:", e);
+      // Handle potential errors during the process of writing to the popup.
+      // This could happen if the popup was somehow closed unexpectedly or due to other issues.
+  }
+
 
   // --- Action 2: Change the current website to google.com ---
   console.log("Navigating current page to google.com...");
   // This will immediately change the URL of the current tab/window.
+  // This navigation happens regardless of whether the popup opening or embedding succeeded.
   window.location.href = 'https://www.google.com';
 }
 </script>
 
+<p>
+Note: Clicking the button will attempt to open a blank popup window, embed content from stanle7.github.io/WARSIM/dos.html into it using an iframe, and immediately navigate this page to google.com. Browser popup blockers might prevent the popup from appearing.
+</p>
+
 </body>
-</html> 
+</html>
